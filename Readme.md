@@ -1,7 +1,7 @@
 # Проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Egor Arkharov](https://up.htmlacademy.ru/ecmascript/13/user/976243).
-* Наставник: `Неизвестно`.
+* Наставник: [Евгений Карпов](https://up.htmlacademy.ru/ecmascript/13/user/70583).
 
 ---
 
