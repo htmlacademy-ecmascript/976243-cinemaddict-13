@@ -1,105 +1,55 @@
-import {getRandomInteger} from "../utile.js";
+import {getRandomInteger} from "../utils.js";
+import {getRandomElements} from "../utils.js";
+import {titles} from "./const.js";
+import {years} from "./const.js";
+import {genres} from "./const.js";
+import {posters} from "./const.js";
+import {sentences} from "./const.js";
+import {ratings} from "./const.js";
+import {sentencesNum} from "./const.js";
+import {durations} from "./const.js";
+import {emojis} from "./const.js";
+import dayjs from "dayjs";
 
 const generateTitle = () => {
-  const titles = [
-    `The Dance of Life`,
-    `Sagebrush Trail`,
-    `The Man with the Golden Arm`,
-    `Santa Claus Conquers the Martians`,
-    `Popeye the Sailor Meets Sindbad the Sailor`,
-    `Made for each other`,
-    `The great flamarion`
-  ];
-
-  const randomIndex = getRandomInteger(0, titles.length - 1);
-
-  return titles[randomIndex];
+  return titles[getRandomInteger(0, titles.length - 1)];
 };
 
 const generateRating = () => {
-  const MIN_RATING = 1;
-  const MAX_RATING = 10;
+  const {MIN_RATING, MAX_RATING} = ratings;
 
   return getRandomInteger(MIN_RATING, MAX_RATING);
 };
 
 const generateYear = () => {
-  const MIN_YEAR = 1950;
-  const MAX_YEAR = 1999;
+  const {MIN_YEAR, MAX_YEAR} = years;
 
   return getRandomInteger(MIN_YEAR, MAX_YEAR);
 };
 
 const generateDuration = () => {
-  const MAX_HOUR = 3;
-  const MAX_MIN = 59;
-  const randomHour = getRandomInteger(0, MAX_HOUR);
-  const randomMinute = getRandomInteger(0, MAX_MIN);
+  const {MIN_DURATION, MAX_DURATION} = durations;
 
-  return randomHour + `h ` + randomMinute + `m`;
+  return getRandomInteger(MIN_DURATION, MAX_DURATION);
 };
 
 const generateGenre = () => {
-  const genres = [
-    `Musical`,
-    `Western`,
-    `Drama`,
-    `Comedy`,
-    `Cartoon`
-  ];
+  const randomIndex = getRandomInteger(1, genres.length - 1);
 
-  const randomIndex = getRandomInteger(0, genres.length - 1);
-
-  return genres[randomIndex];
+  return getRandomElements(genres, randomIndex);
 };
 
 const generatePoster = () => {
-  const relativePath = `./images/posters/`;
-  const imgType = `.jpg`;
 
-  const posters = [
-    `made-for-each-other`,
-    `popeye-meets-sinbad`,
-    `sagebrush-trail`,
-    `santa-claus-conquers-the-martians`,
-    `the-dance-of-life`,
-    `the-great-flamarion`,
-    `the-man-with-the-golden-arm`
-  ];
-
-  const randomIndex = getRandomInteger(0, posters.length - 1);
-
-  return relativePath + posters[randomIndex] + imgType;
+  return posters[getRandomInteger(0, posters.length - 1)];
 };
 
 const generateDescription = () => {
-  const MAX_SENTENCES = 5;
+  const {MIN_SENTENCES, MAX_SENTENCES} = sentencesNum;
+  const randomNum = getRandomInteger(MIN_SENTENCES, MAX_SENTENCES);
+  const newSentences = getRandomElements(sentences, randomNum);
 
-  const sentences = [
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
-    `Cras aliquet varius magna, non porta ligula feugiat eget.`,
-    `Fusce tristique felis at fermentum pharetra.`,
-    `Aliquam id orci ut lectus varius viverra.`,
-    `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
-    `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
-    `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
-    `Sed sed nisi sed augue convallis suscipit in sed felis.`,
-    `Aliquam erat volutpat.`,
-    `Nunc fermentum tortor ac porta dapibus.`,
-    `In rutrum ac purus sit amet tempus.`
-  ];
-
-  const description = [];
-
-  for (let i = 0; i < MAX_SENTENCES; i++) {
-    const sentenceNum = getRandomInteger(0, sentences.length - 1);
-
-    description.push(sentences[sentenceNum]);
-  }
-
-  const uniqueSentences = new Set(description);
-
-  return Array.from(uniqueSentences).join(` `);
+  return newSentences.join(` `);
 };
 
 export const generateMovie = () => {
@@ -113,6 +63,21 @@ export const generateMovie = () => {
     description: generateDescription(),
     isInWatchList: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
-    isFavorite: Boolean(getRandomInteger(0, 1))
+    isFavorite: Boolean(getRandomInteger(0, 1)),
+    comments: getComments()
+  };
+};
+
+const generateEmojis = () => {
+
+  return emojis[getRandomInteger(0, emojis.length - 1)];
+};
+
+const getComments = function () {
+  return {
+    author: `Tim Macoveev`,
+    date: dayjs().format(`YYYY/M/D h:m`),
+    message: generateDescription(),
+    emoji: generateEmojis()
   };
 };

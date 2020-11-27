@@ -1,5 +1,8 @@
-import {render} from "../utile.js";
+import {render} from "../utils.js";
+import {getRandomInteger} from "../utils.js";
 import {createPopupTemplate} from "../view/popup.js";
+import {createComments} from "../view/popup-comments.js";
+import {commentsNum} from "./const.js";
 
 const EvtKeys = {
   ESCAPE: `Escape`
@@ -14,12 +17,25 @@ const onPopupEscPress = function (evt) {
   }
 };
 
-export const openPopup = function (evt, film) {
+const addComments = function () {
+  const {MIN_COMMENTS, MAX_COMMENTS} = commentsNum;
+  const commentsAmount = getRandomInteger(MIN_COMMENTS, MAX_COMMENTS);
+  const commentsWrapper = siteMainElement.querySelector(`.film-details__comments-list`);
+
+  for (let i = 0; i < commentsAmount; i++) {
+    render(commentsWrapper, createComments());
+  }
+};
+
+export const openPopup = function (evt, films) {
+  const randomFilm = films[getRandomInteger(0, films.length - 1)];
+
   if (evt.target.classList.contains(`film-card__title`)
   || evt.target.classList.contains(`film-card__poster`)
   || evt.target.classList.contains(`film-card__comments`)) {
 
-    render(siteMainElement, createPopupTemplate(film));
+    render(siteMainElement, createPopupTemplate(randomFilm));
+    addComments();
   } else {
     return;
   }
