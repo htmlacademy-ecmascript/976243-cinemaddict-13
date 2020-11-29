@@ -1,38 +1,39 @@
+import {render} from "./utils.js";
+import {generateMovie} from "./mock/movie.js";
+import {generateFilter} from "./mock/filter.js";
+import {openPopup} from "./mock/popup.js";
+import {moviesNum} from "./mock/const.js";
+import {showMoreButton} from "./mock/show-more-button.js";
 import {createUserRankTemplate} from "./view/user-rank.js";
-import {createMenuTemplate} from "./view/menu.js";
+import {createFilterTemplate} from "./view/menu-filters.js";
+import {createSortingTemplate} from "./view/menu-sorting.js";
 import {createMovieCardTemplate} from "./view/movie-card.js";
 import {createMoviesWrapperTemplate} from "./view/movies-wrapper.js";
-import {createShowMoreButtonTemplate} from "./view/show-more-button.js";
-// import {createPopupTemplate} from "./view/popup.js";
 
-const MOVIE_CARDS_MAIN = 5;
-const MOVIE_CARDS_EXTRA = 2;
+const {MOVIES_NUM_ALL, MOVIES_NUM_PER_STEP} = moviesNum;
+
+export const films = new Array(MOVIES_NUM_ALL).fill().map(generateMovie);
+
+const filters = generateFilter(films);
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 
-const render = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
-};
-
-const renderCard = (container, template, count) => {
-  for (let i = 0; i < count; i++) {
-    render(container, template);
-  }
-};
-
 render(siteHeaderElement, createUserRankTemplate());
-render(siteMainElement, createMenuTemplate());
+render(siteMainElement, createFilterTemplate(filters));
+render(siteMainElement, createSortingTemplate());
 render(siteMainElement, createMoviesWrapperTemplate());
 
 const movies = siteMainElement.querySelector(`.films`);
-const moviesWrapper = movies.querySelectorAll(`.films-list`);
+const container = movies.querySelector(`.films-list__container`);
 
-moviesWrapper.forEach((list, index) => {
-  const container = list.querySelector(`.films-list__container`);
-  const count = (index === 0) ? MOVIE_CARDS_MAIN : MOVIE_CARDS_EXTRA;
-  renderCard(container, createMovieCardTemplate(), count);
+for (let i = 0; i < Math.min(films.length, MOVIES_NUM_PER_STEP); i++) {
+  render(container, createMovieCardTemplate(films[i]));
+}
+
+showMoreButton();
+
+container.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  openPopup(evt, films);
 });
-
-render(moviesWrapper[0], createShowMoreButtonTemplate());
-// render(siteMainElement, createPopupTemplate());
