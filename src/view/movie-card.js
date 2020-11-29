@@ -1,4 +1,6 @@
-export const createMovieCardTemplate = (movie) => {
+import {createElement} from "../utils.js";
+
+const createMovieCardTemplate = (movie) => {
   const {poster, title, rating, year, duration, genre, description, isInWatchList, isWatched, isFavorite} = movie;
 
   const isActive = (control) => {
@@ -18,8 +20,7 @@ export const createMovieCardTemplate = (movie) => {
   };
 
 
-  return `
-  <article class="film-card">
+  return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
@@ -35,6 +36,28 @@ export const createMovieCardTemplate = (movie) => {
       <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isActive(isWatched)}" type="button">Mark as watched</button>
       <button class="film-card__controls-item button film-card__controls-item--favorite ${isActive(isFavorite)}" type="button">Mark as favorite</button>
     </div>
-  </article>
-  `;
+  </article>`;
 };
+
+export default class Movie {
+  constructor(films) {
+    this._films = films;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMovieCardTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
