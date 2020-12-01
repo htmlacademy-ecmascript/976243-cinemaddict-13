@@ -1,14 +1,6 @@
-import {getRandomInteger} from "../utils.js";
-import {getRandomElements} from "../utils.js";
-import {titles} from "./const.js";
-import {years} from "./const.js";
-import {genres} from "./const.js";
-import {posters} from "./const.js";
-import {sentences} from "./const.js";
-import {ratings} from "./const.js";
-import {sentencesNum} from "./const.js";
-import {durations} from "./const.js";
-import {emojis} from "./const.js";
+import {getRandomInteger, getRandomElements} from "../utils.js";
+import {titles, years, genres, posters,
+  sentences, ratings, sentencesNum, durations, emojis} from "./const.js";
 import dayjs from "dayjs";
 
 const generateTitle = () => {
@@ -69,7 +61,6 @@ export const generateMovie = () => {
 };
 
 const generateEmojis = () => {
-
   return emojis[getRandomInteger(0, emojis.length - 1)];
 };
 

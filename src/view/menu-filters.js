@@ -1,3 +1,5 @@
+import {createElement} from "../utils.js";
+
 const countFilms = (filterName, filters) => {
   let filterCount = 0;
 
@@ -10,13 +12,12 @@ const countFilms = (filterName, filters) => {
   return filterCount;
 };
 
-export const createFilterTemplate = (filters) => {
+const createFilterTemplate = (filters) => {
   const watchedListCount = countFilms(`watchList`, filters);
   const watchedCount = countFilms(`watched`, filters);
   const favoriteCount = countFilms(`favorite`, filters);
 
-  return `
-  <nav class="main-navigation">
+  return `<nav class="main-navigation">
     <div class="main-navigation__items">
       <a href="#all" class="main-navigation__item">All movies</a>
       <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${watchedListCount}</span></a>
@@ -24,6 +25,28 @@ export const createFilterTemplate = (filters) => {
       <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favoriteCount}</span></a>
     </div>
     <a href="#stats" class="main-navigation__additional">Stats</a>
-  </nav>
-  `;
+  </nav>`;
 };
+
+export default class Filter {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilterTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

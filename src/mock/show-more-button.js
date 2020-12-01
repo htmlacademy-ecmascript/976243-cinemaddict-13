@@ -1,11 +1,10 @@
+import {render} from "../utils.js";
 import {moviesNum} from "./const.js";
 import {films} from "../main.js";
-import {render} from "../utils.js";
-import {createShowMoreButtonTemplate} from "../view/show-more-button.js";
-import {createMovieCardTemplate} from "../view/movie-card.js";
+import Button from "../view/show-more-button.js";
+import Movie from "../view/movie-card.js";
 
 const {MOVIES_NUM_PER_STEP} = moviesNum;
-
 
 export const showMoreButton = function () {
   const siteMainElement = document.querySelector(`.main`);
@@ -13,11 +12,10 @@ export const showMoreButton = function () {
   const container = movies.querySelector(`.films-list__container`);
   const moviesWrapper = movies.querySelector(`.films-list`);
 
-
   if (films.length > MOVIES_NUM_PER_STEP) {
     let renderedFilms = MOVIES_NUM_PER_STEP;
 
-    render(moviesWrapper, createShowMoreButtonTemplate());
+    render(moviesWrapper, new Button().getElement());
 
     const buttonElement = movies.querySelector(`.films-list__show-more`);
 
@@ -26,7 +24,7 @@ export const showMoreButton = function () {
 
       films
       .slice(renderedFilms, renderedFilms + MOVIES_NUM_PER_STEP)
-      .forEach((film) => render(container, createMovieCardTemplate(film)));
+      .forEach((film) => render(container, new Movie(film).getElement()));
 
       renderedFilms += MOVIES_NUM_PER_STEP;
 
