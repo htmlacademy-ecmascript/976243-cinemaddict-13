@@ -1,10 +1,18 @@
 import {render} from "../utils.js";
 import {moviesNum} from "./const.js";
 import {films} from "../main.js";
+import {openPopup} from "./popup.js";
 import Button from "../view/show-more-button.js";
 import Movie from "../view/movie-card.js";
 
 const {MOVIES_NUM_PER_STEP} = moviesNum;
+
+const renderPopup = function (movie, filmNum) {
+  movie.addEventListener(`click`, function (evt) {
+    evt.preventDefault();
+    openPopup(films, filmNum);
+  });
+};
 
 export const showMoreButton = function () {
   const siteMainElement = document.querySelector(`.main`);
@@ -24,7 +32,10 @@ export const showMoreButton = function () {
 
       films
       .slice(renderedFilms, renderedFilms + MOVIES_NUM_PER_STEP)
-      .forEach((film) => render(container, new Movie(film).getElement()));
+      .forEach(function (film, index) {
+        render(container, new Movie(film).getElement());
+        renderPopup(film, MOVIES_NUM_PER_STEP + index);
+      });
 
       renderedFilms += MOVIES_NUM_PER_STEP;
 

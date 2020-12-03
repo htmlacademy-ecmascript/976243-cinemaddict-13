@@ -1,7 +1,15 @@
 import {createElement} from "../utils.js";
 
 const createMovieCardTemplate = (movie) => {
-  const {poster, title, rating, year, duration, genre, description, isInWatchList, isWatched, isFavorite} = movie;
+  const {poster,
+    title,
+    rating,
+    year, duration,
+    genre,
+    description,
+    isInWatchList,
+    isWatched,
+    isFavorite} = movie;
 
   const isActive = (control) => {
     const activeClassName = control

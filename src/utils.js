@@ -22,12 +22,12 @@ export const RenderPosition = {
   BEFOREEND: `beforeend`
 };
 
-export const render = (container, element, place = RenderPosition.BEFOREEND) => {
+export const render = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
       break;
-    case RenderPosition.BEFOREEND:
+    default:
       container.append(element);
       break;
   }
