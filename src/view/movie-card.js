@@ -1,4 +1,5 @@
 import {createElement} from "../utils.js";
+import {openPopup} from "../mock/popup.js";
 
 const createMovieCardTemplate = (movie) => {
   const {poster,
@@ -48,18 +49,23 @@ const createMovieCardTemplate = (movie) => {
 };
 
 export default class Movie {
-  constructor(films) {
-    this._films = films;
+  constructor(film) {
+    this._film = film;
     this._element = null;
+
+    this.onCardClick = this.onCardClick.bind(this);
   }
 
   getTemplate() {
-    return createMovieCardTemplate(this._films);
+    return createMovieCardTemplate(this._film);
   }
 
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
+      this._element.querySelector(`.film-card__title`).addEventListener(`click`, this.onCardClick);
+      this._element.querySelector(`.film-card__poster`).addEventListener(`click`, this.onCardClick);
+      this._element.querySelector(`.film-card__comments`).addEventListener(`click`, this.onCardClick);
     }
 
     return this._element;
@@ -67,5 +73,10 @@ export default class Movie {
 
   removeElement() {
     this._element = null;
+  }
+
+  onCardClick(evt) {
+    evt.preventDefault();
+    openPopup(this._film);
   }
 }

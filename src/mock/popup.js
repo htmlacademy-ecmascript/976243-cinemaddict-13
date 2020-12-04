@@ -31,8 +31,7 @@ const addComments = function () {
   }
 };
 
-export const openPopup = function (films, index) {
-  const film = films[index];
+export const openPopup = function (film) {
 
   body.classList.add(`hide-overflow`);
 

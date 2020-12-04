@@ -2,7 +2,7 @@ import {render} from "./utils.js";
 
 import {generateMovie} from "./mock/movie.js";
 import {generateFilter} from "./mock/filter.js";
-import {openPopup} from "./mock/popup.js";
+// import {openPopup} from "./mock/popup.js";
 import {moviesNum} from "./mock/const.js";
 import {showMoreButton} from "./mock/show-more-button.js";
 
@@ -29,15 +29,6 @@ const renderFilms = function (place) {
   for (let i = 0; i < Math.min(films.length, MOVIES_NUM_PER_STEP); i++) {
     render(place, new Movie(films[i]).getElement());
   }
-
-  const moviesCards = place.querySelectorAll(`.film-card`);
-
-  moviesCards.forEach(function (card, index) {
-    card.addEventListener(`click`, function (evt) {
-      evt.preventDefault();
-      openPopup(films, index);
-    });
-  });
 };
 
 if (films.length === 0) {
