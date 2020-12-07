@@ -24,7 +24,9 @@ export const showMoreButton = function () {
 
       films
       .slice(renderedFilms, renderedFilms + MOVIES_NUM_PER_STEP)
-      .forEach((film) => render(container, new Movie(film).getElement()));
+      .forEach(function (film) {
+        render(container, new Movie(film).getElement());
+      });
 
       renderedFilms += MOVIES_NUM_PER_STEP;
 

@@ -76,3 +76,5 @@ export const emojis = [
   `./images/emoji/sleeping.png`,
   `./images/emoji/smile.png`
 ];
+
+export const MAX_LENGTH_SHORT_DESCRIPTION = 140;

@@ -31,21 +31,12 @@ const addComments = function () {
   }
 };
 
-export const openPopup = function (evt, films) {
-  const randomFilm = films[getRandomInteger(0, films.length - 1)];
+export const openPopup = function (film) {
 
+  body.classList.add(`hide-overflow`);
 
-  if (evt.target.classList.contains(`film-card__title`)
-   || evt.target.classList.contains(`film-card__poster`)
-   || evt.target.classList.contains(`film-card__comments`)) {
-
-    body.classList.add(`hide-overflow`);
-
-    render(siteMainElement, new Popup(randomFilm).getElement());
-    addComments();
-  } else {
-    return;
-  }
+  render(siteMainElement, new Popup(film).getElement());
+  addComments();
 
   const closeButton = siteMainElement.querySelector(`.film-details__close-btn`);
 
