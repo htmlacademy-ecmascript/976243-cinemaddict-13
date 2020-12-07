@@ -1,6 +1,6 @@
-import {getRandomInteger, getRandomElements} from "../utils.js";
+import {getRandomInteger, getRandomElements} from "../utils/common.js";
 import {titles, years, genres, posters,
-  sentences, ratings, sentencesNum, durations, emojis} from "./const.js";
+  sentences, ratings, sentencesNum, commentsNum, durations, emojis} from "./const.js";
 import dayjs from "dayjs";
 
 const generateTitle = () => {
@@ -44,6 +44,12 @@ const generateDescription = () => {
   return newSentences.join(` `);
 };
 
+const commentsAmount = () => {
+  const {MIN_COMMENTS, MAX_COMMENTS} = commentsNum;
+
+  return getRandomInteger(MIN_COMMENTS, MAX_COMMENTS);
+};
+
 export const generateMovie = () => {
   return {
     poster: generatePoster(),
@@ -56,6 +62,7 @@ export const generateMovie = () => {
     isInWatchList: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
+    commentsAmount: commentsAmount(),
     comments: getComments()
   };
 };

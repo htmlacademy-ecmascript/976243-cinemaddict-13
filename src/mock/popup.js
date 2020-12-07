@@ -1,6 +1,4 @@
-import {render} from "../utils.js";
-import {getRandomInteger} from "../utils.js";
-import {commentsNum} from "./const.js";
+import {render} from "../utils/render.js";
 
 import Popup from "../view/popup.js";
 import Comment from "../view/popup-comments.js";
@@ -20,23 +18,21 @@ const onPopupEscPress = function (evt) {
   }
 };
 
-const addComments = function () {
-  const {MIN_COMMENTS, MAX_COMMENTS} = commentsNum;
-  const commentsAmount = getRandomInteger(MIN_COMMENTS, MAX_COMMENTS);
+const addComments = function (commentsAmount) {
   const commentsWrapper = siteMainElement.querySelector(`.film-details__comments-list`);
 
   for (let i = 0; i < commentsAmount; i++) {
-
-    render(commentsWrapper, new Comment().getElement());
+    render(commentsWrapper, new Comment());
   }
 };
 
 export const openPopup = function (film) {
+  const {commentsAmount} = film;
 
   body.classList.add(`hide-overflow`);
 
-  render(siteMainElement, new Popup(film).getElement());
-  addComments();
+  render(siteMainElement, new Popup(film));
+  addComments(commentsAmount);
 
   const closeButton = siteMainElement.querySelector(`.film-details__close-btn`);
 
