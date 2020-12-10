@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbsttactView from "./abstract.js";
 import {generateMovie} from "../mock/movie.js";
 
 export const createComments = () => {
@@ -20,24 +20,8 @@ export const createComments = () => {
   </li>`;
 };
 
-export default class Comment {
-  constructor() {
-    this._element = null;
-  }
-
+export default class Comment extends AbsttactView {
   getTemplate() {
     return createComments();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

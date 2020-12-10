@@ -1,4 +1,5 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
+import {createElement} from "../utils/render.js";
 import {openPopup} from "../mock/popup.js";
 
 const createMovieCardTemplate = (movie) => {
@@ -10,7 +11,8 @@ const createMovieCardTemplate = (movie) => {
     description,
     isInWatchList,
     isWatched,
-    isFavorite} = movie;
+    isFavorite,
+    commentsAmount} = movie;
 
   const isActive = (control) => {
     const activeClassName = control
@@ -28,6 +30,14 @@ const createMovieCardTemplate = (movie) => {
     }
   };
 
+  const checkComments = () => {
+    if (commentsAmount === 1) {
+      return commentsAmount + ` comment`;
+    } else {
+      return commentsAmount + ` comments`;
+    }
+  };
+
 
   return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
@@ -39,7 +49,7 @@ const createMovieCardTemplate = (movie) => {
     </p>
     <img src="${poster}" alt="" class="film-card__poster">
     <p class="film-card__description">${shortDescriprion()}</p>
-    <a class="film-card__comments">51 comments</a>
+    <a class="film-card__comments">${checkComments()}</a>
     <div class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isActive(isInWatchList)}" type="button">Add to watchlist</button>
       <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isActive(isWatched)}" type="button">Mark as watched</button>
@@ -48,10 +58,10 @@ const createMovieCardTemplate = (movie) => {
   </article>`;
 };
 
-export default class Movie {
+export default class Movie extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
 
     this.onCardClick = this.onCardClick.bind(this);
   }
@@ -69,10 +79,6 @@ export default class Movie {
     }
 
     return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   onCardClick(evt) {
