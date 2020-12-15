@@ -1,6 +1,5 @@
 import AbstractView from "./abstract.js";
-import {createElement} from "../utils/render.js";
-import {openPopup} from "../mock/popup.js";
+import {MAX_LENGTH_SHORT_DESCRIPTION} from "../mock/const.js";
 
 const createMovieCardTemplate = (movie) => {
   const {poster,
@@ -23,19 +22,19 @@ const createMovieCardTemplate = (movie) => {
   };
 
   const shortDescriprion = () => {
-    if (description.length >= 140) {
-      return description.slice(0, 139) + `...`;
-    } else {
-      return description;
-    }
+    const descriptionText = (description.length >= MAX_LENGTH_SHORT_DESCRIPTION)
+      ? description.slice(0, MAX_LENGTH_SHORT_DESCRIPTION - 1) + `...`
+      : description;
+
+    return descriptionText;
   };
 
   const checkComments = () => {
-    if (commentsAmount === 1) {
-      return commentsAmount + ` comment`;
-    } else {
-      return commentsAmount + ` comments`;
-    }
+    const commentsNum = (commentsAmount === 1)
+      ? commentsAmount + ` comment`
+      : commentsAmount + ` comments`;
+
+    return commentsNum;
   };
 
 
@@ -63,26 +62,76 @@ export default class Movie extends AbstractView {
     super();
     this._film = film;
 
-    this.onCardClick = this.onCardClick.bind(this);
+    this._onPosterClick = this._onPosterClick.bind(this);
+    this._onTitleClick = this._onTitleClick.bind(this);
+    this._onCommentsClick = this._onCommentsClick.bind(this);
+
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
     return createMovieCardTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-      this._element.querySelector(`.film-card__title`).addEventListener(`click`, this.onCardClick);
-      this._element.querySelector(`.film-card__poster`).addEventListener(`click`, this.onCardClick);
-      this._element.querySelector(`.film-card__comments`).addEventListener(`click`, this.onCardClick);
-    }
-
-    return this._element;
+  _onPosterClick(evt) {
+    evt.preventDefault();
+    this._callback.posterClick();
   }
 
-  onCardClick(evt) {
+  _onTitleClick(evt) {
     evt.preventDefault();
-    openPopup(this._film);
+    this._callback.titleClick();
+  }
+
+  _onCommentsClick(evt) {
+    evt.preventDefault();
+    this._callback.commentsClick();
+  }
+
+  setPosterClickHandler(callback) {
+    this._callback.posterClick = callback;
+    this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, this._onPosterClick);
+  }
+
+  setTitleClickHandler(callback) {
+    this._callback.titleClick = callback;
+    this.getElement().querySelector(`.film-card__title`).addEventListener(`click`, this._onTitleClick);
+  }
+
+  setCommentsClickHandler(callback) {
+    this._callback.commentsClick = callback;
+    this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, this._onCommentsClick);
+  }
+
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchlistClick();
+  }
+
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchedClick();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  setWatchlistClickHandler(callback) {
+    this._callback.watchlistClick = callback;
+    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, this._watchlistClickHandler);
+  }
+
+  setWatchedClickHandler(callback) {
+    this._callback.watchedClick = callback;
+    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, this._watchedClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, this._favoriteClickHandler);
   }
 }
