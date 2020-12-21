@@ -1,8 +1,11 @@
-import {render, remove} from "../utils/render.js";
+import {render, remove, RenderPosition} from "../utils/render.js";
 import {updateItem} from "../utils/common.js";
-import {moviesNum} from "../mock/const.js";
+import {sortMovieDate, sortMovieRating} from "../utils/sorting.js";
+import {moviesNum, SortType} from "../mock/const.js";
+import {generateFilter} from "../mock/filter.js";
 
 import Sorting from "../view/menu-sorting.js";
+import Filter from "../view/menu-filters.js";
 import MoviesWrapper from "../view/movies-wrapper.js";
 import ListEmpty from "../view/list-empty.js";
 import Button from "../view/show-more-button.js";
@@ -16,8 +19,13 @@ export default class MoviesList {
     this._container = container;
     this._renderedFilmCount = MOVIES_NUM_PER_STEP;
     this._cardPresenter = {};
+    this._generateFilters = null;
 
+    this._currentSortType = SortType.DEFAULT;
+
+    this._filterComponent = null;
     this._listEmptyComponent = new ListEmpty();
+    this._filters = new Filter();
     this._sortingComponent = new Sorting();
     this._moviesWrapperComponent = new MoviesWrapper();
     this._buttonComponent = new Button();
@@ -25,6 +33,7 @@ export default class MoviesList {
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._movies = null;
     this._mainMoviesContainer = null;
@@ -33,18 +42,51 @@ export default class MoviesList {
 
   init(films) {
     this._films = films.slice();
+    this._sourcedFilmsTasks = films.slice();
     this._renderMainContent(films);
   }
 
   _handleFilmChange(updatedFilm) {
     this._films = updateItem(this._films, updatedFilm);
     this._cardPresenter[updatedFilm.id].init(updatedFilm);
+    this._updateFilters();
   }
 
   _handleModeChange() {
     Object
       .values(this._cardPresenter)
       .forEach((presenter) => presenter.resetView());
+  }
+
+  _sortMovies(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._films.sort(sortMovieDate);
+        break;
+      case SortType.RATING:
+        this._films.sort(sortMovieRating);
+        break;
+      default:
+
+        this._films = this._sourcedFilmsTasks.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortMovies(sortType);
+    this._clearMoviesList();
+    this._renderMoviesList();
+  }
+
+  _renderSort() {
+    render(this._container, this._sortingComponent);
+    this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderMainContent() {
@@ -56,9 +98,17 @@ export default class MoviesList {
     this._renderMoviesList();
   }
 
+  _renderFilter() {
+    this._generateFilters = generateFilter(this._films);
+    this._filterComponent = new Filter(this._generateFilters);
+
+    render(this._container, this._filterComponent, RenderPosition.AFTERBEGIN);
+  }
+
   _renderMoviesList() {
-    render(this._container, new Sorting());
-    render(this._container, new MoviesWrapper());
+    this._renderFilter();
+    this._renderSort();
+    render(this._container, this._moviesWrapperComponent);
 
     this._movies = this._container.querySelector(`.films`);
     this._mainMoviesContainer = this._movies.querySelector(`.films-list`);
@@ -98,12 +148,20 @@ export default class MoviesList {
     }
   }
 
-  _clearTaskList() {
+  _updateFilters() {
+    remove(this._filterComponent);
+    this._renderFilter();
+  }
+
+  _clearMoviesList() {
     Object
       .values(this._cardPresenter)
       .forEach((presenter) => presenter.destroy());
     this._cardPresenter = {};
     this._renderedFilmCount = MOVIES_NUM_PER_STEP;
+    remove(this._filterComponent);
+    remove(this._moviesWrapperComponent);
+    remove(this._moviesWrapperComponent);
     remove(this._buttonComponent);
   }
 }

@@ -11,7 +11,8 @@ const createPopupTemplate = (movie) => {
     isInWatchList,
     isWatched,
     isFavorite,
-    commentsAmount} = movie;
+    commentsAmount,
+    comments} = movie;
 
   const isActive = (control) => {
     const activeClassName = control
@@ -25,6 +26,33 @@ const createPopupTemplate = (movie) => {
     const genreTitle = (genre.length === 1) ? `Genre` : `Genres`;
 
     return genreTitle;
+  };
+
+  const addCommentTemplate = (comment) => {
+    return `<li class="film-details__comment">
+    <span class="film-details__comment-emoji">
+      <img src="${comment.emoji}" width="55" height="55" alt="emoji-smile">
+    </span>
+    <div>
+      <p class="film-details__comment-text">${comment.message}</p>
+      <p class="film-details__comment-info">
+        <span class="film-details__comment-author">${comment.author}</span>
+        <span class="film-details__comment-day">${comment.date}</span>
+        <button class="film-details__comment-delete">Delete</button>
+      </p>
+    </div>
+  </li>`;
+  };
+
+
+  const addComments = () => {
+    const foo = [];
+
+    for (let i = 0; i < comments.length; i++) {
+      foo.push(addCommentTemplate(comments[i]));
+    }
+
+    return foo.join(``);
   };
 
   return `<section class="film-details">
@@ -105,7 +133,7 @@ const createPopupTemplate = (movie) => {
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsAmount}</span></h3>
 
         <ul class="film-details__comments-list">
-
+          ${addComments()}
         </ul>
 
         <div class="film-details__new-comment">
