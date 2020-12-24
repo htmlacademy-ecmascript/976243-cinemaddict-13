@@ -1,6 +1,5 @@
 import MovieCard from "../view/movie-card.js";
 import Popup from "../view/popup.js";
-import Comment from "../view/popup-comments";
 import {render, remove, replace} from "../utils/render.js";
 
 const EvtKeys = {
@@ -30,7 +29,6 @@ export default class Movie {
 
     this._openPopup = this._openPopup.bind(this);
     this._closePopup = this._closePopup.bind(this);
-    this._addComments = this._addComments.bind(this);
     this._onPopupEscPress = this._onPopupEscPress.bind(this);
 
     this._handleWatchListClick = this._handleWatchListClick.bind(this);
@@ -79,7 +77,6 @@ export default class Movie {
     this._siteMainElement = this._bodyElement.querySelector(`main`);
 
     render(this._siteMainElement, this._popupComponent);
-    this._addComments(this._film.commentsAmount);
 
     this._popupComponent.setWatchlistClickHandler(this._handleWatchListClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
@@ -100,14 +97,6 @@ export default class Movie {
     this._mode = Mode.DEFAULT;
 
     document.removeEventListener(`keydown`, this._onPopupEscPress);
-  }
-
-  _addComments(commentsNum) {
-    this._commentsWrapper = this._siteMainElement.querySelector(`.film-details__comments-list`);
-
-    for (let i = 0; i < commentsNum; i++) {
-      render(this._commentsWrapper, new Comment());
-    }
   }
 
   _onPopupEscPress(evt) {

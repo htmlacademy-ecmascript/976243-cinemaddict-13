@@ -34,6 +34,8 @@ const generateDescription = () => {
 };
 
 export const generateMovie = () => {
+  const numOfComments = commentsAmount();
+
   return {
     id: generateId(),
     poster: generatePoster(),
@@ -46,16 +48,21 @@ export const generateMovie = () => {
     isInWatchList: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    commentsAmount: commentsAmount(),
-    comments: getComments()
+    commentsAmount: numOfComments,
+    comments: generateComments(numOfComments)
   };
 };
 
-const getComments = function () {
-  return {
-    author: `Tim Macoveev`,
-    date: dayjs().format(`YYYY/M/D h:m`),
-    message: generateDescription(),
-    emoji: generateEmojis()
+const generateComments = (numOfComments) => {
+  const generateComment = () => {
+    return {
+      author: `Tim Macoveev`,
+      date: dayjs().format(`YYYY/M/D h:m`),
+      message: generateDescription(),
+      emoji: generateEmojis()
+    };
   };
+
+  const comments = new Array(numOfComments).fill().map(generateComment);
+  return comments;
 };

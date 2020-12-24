@@ -78,3 +78,9 @@ export const emojis = [
 ];
 
 export const MAX_LENGTH_SHORT_DESCRIPTION = 140;
+
+export const SortType = {
+  DEFAULT: `default`,
+  DATE: `date`,
+  RATING: `rating`
+};
