@@ -81,11 +81,11 @@ export default class Movie {
     this._popupComponent.setWatchlistClickHandler(this._handleWatchListClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._popupComponent.setCloseClickHandler(this._closePopup);
+
+    this._popupComponent.restoreHandlers();
 
     this._mode = Mode.POPUP;
-
-    this._closeButton = this._siteMainElement.querySelector(`.film-details__close-btn`);
-    this._closeButton.addEventListener(`click`, this._closePopup);
 
     document.addEventListener(`keydown`, this._onPopupEscPress);
   }
