@@ -66,7 +66,7 @@ export const moviesNum = {
 };
 
 export const commentsNum = {
-  MIN_COMMENTS: 0,
+  MIN_COMMENTS: 1,
   MAX_COMMENTS: 5
 };
 
