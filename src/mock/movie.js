@@ -62,6 +62,7 @@ export const generateMovie = () => {
 const generateComments = (numOfComments) => {
   const generateComment = () => {
     return {
+      id: generateId(),
       author: `Tim Macoveev`,
       date: dayjs.between(`2019`, `2020`).format(`YYYY/M/D HH:mm`),
       message: generateDescription(),

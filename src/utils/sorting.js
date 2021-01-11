@@ -8,6 +8,5 @@ const getWeight = (a, b) => {
   return 0;
 };
 
-
-export const sortMovieDate = (filmA, filmB) => getWeight(filmA.year, filmB.year);
+export const sortMovieDate = (filmA, filmB) => getWeight(filmA.year.slice(-4), filmB.year.slice(-4));
 export const sortMovieRating = (filmA, filmB) => getWeight(filmA.rating, filmB.rating);
