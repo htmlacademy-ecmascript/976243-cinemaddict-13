@@ -33,8 +33,6 @@ export default class MoviesList {
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._moviesModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
 
     this._movies = null;
     this._generateFilters = null;
@@ -46,12 +44,22 @@ export default class MoviesList {
 
   init() {
     this._renderBoard();
+    this._moviesModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+  }
+
+  destroy() {
+    this._clearBoard({resetRenderedTaskCount: true, resetSortType: true});
+
+    remove(this._moviesWrapperComponent);
+    this._moviesModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getMovies() {
-    const filterType = this._filterModel.getFilter();
+    const FilterType = this._filterModel.getFilter();
     const movies = this._moviesModel.getMovies();
-    const filtredMovies = filter[filterType](movies);
+    const filtredMovies = filter[FilterType](movies);
 
     switch (this._currentSortType) {
       case SortType.DATE:

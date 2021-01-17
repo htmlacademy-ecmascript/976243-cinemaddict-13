@@ -39,8 +39,12 @@ const generateDescription = () => {
   return newSentences.join(` `);
 };
 
+const generateWatchedDate = () => dayjs.between(dayjs(), dayjs().year(dayjs().year() - 1));
+
 export const generateMovie = () => {
   const numOfComments = commentsAmount();
+  const isWatched = Boolean(getRandomInteger(0, 1));
+  const watchedData = (isWatched) ? generateWatchedDate() : null;
 
   return {
     id: generateId(),
@@ -52,8 +56,9 @@ export const generateMovie = () => {
     genre: generateGenre(),
     description: generateDescription(),
     isInWatchList: Boolean(getRandomInteger(0, 1)),
-    isWatched: Boolean(getRandomInteger(0, 1)),
+    isWatched,
     isFavorite: Boolean(getRandomInteger(0, 1)),
+    watchedData,
     commentsAmount: numOfComments,
     comments: generateComments(numOfComments)
   };
