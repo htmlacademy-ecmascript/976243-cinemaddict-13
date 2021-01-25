@@ -16,3 +16,5 @@ export const getRandomElements = (oldArr, maxLength) => {
 
   return Array.from(uniqueElements);
 };
+
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);

@@ -1,11 +1,13 @@
 import AbstractView from "./abstract.js";
 import {MAX_LENGTH_SHORT_DESCRIPTION} from "../mock/const.js";
+import dayjs from "dayjs";
 
 const createMovieCardTemplate = (movie) => {
   const {poster,
     title,
     rating,
-    year, duration,
+    year,
+    duration,
     genre,
     description,
     isInWatchList,
@@ -41,7 +43,7 @@ const createMovieCardTemplate = (movie) => {
     <h3 class="film-card__title">${title}</h3>
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
-      <span class="film-card__year">${year.slice(-4)}</span>
+      <span class="film-card__year">${dayjs(new Date(year)).format(`YYYY`)}</span>
       <span class="film-card__duration">${Math.trunc(duration / 60)}h ${duration % 60}m</span>
       <span class="film-card__genre">${genre[0]}</span>
     </p>
