@@ -1,4 +1,4 @@
-import {render, remove} from "../utils/render.js";
+import {render, remove, RenderPosition} from "../utils/render.js";
 import {sortMovieDate, sortMovieRating} from "../utils/sorting.js";
 import {filter} from "../utils/filter.js";
 import {moviesNum, SortType, UpdateType, UserAction} from "../mock/const.js";
@@ -8,13 +8,14 @@ import Filter from "../view/menu-filters.js";
 import MoviesWrapper from "../view/movies-wrapper.js";
 import ListEmpty from "../view/list-empty.js";
 import Button from "../view/show-more-button.js";
+import LoadingView from "../view/loading.js";
 
 import MovieCardPresenter from "./movie.js";
 
 const {MOVIES_NUM_PER_STEP} = moviesNum;
 
 export default class MoviesList {
-  constructor(container, moviesModel, filterModel) {
+  constructor(container, moviesModel, filterModel, api) {
     this._container = container;
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
@@ -22,10 +23,13 @@ export default class MoviesList {
     this._cardPresenter = {};
 
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
+    this._api = api;
 
     this._listEmptyComponent = new ListEmpty();
     this._filters = new Filter();
     this._moviesWrapperComponent = new MoviesWrapper();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -92,6 +96,11 @@ export default class MoviesList {
         this._clearBoard({resetRenderedMovieCount: true, resetSortType: true});
         this._renderBoard();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderBoard();
+        break;
     }
   }
 
@@ -134,7 +143,7 @@ export default class MoviesList {
   }
 
   _renderCard(film, container) {
-    const cardPresenter = new MovieCardPresenter(container, this._handleViewAction, this._handleModeChange);
+    const cardPresenter = new MovieCardPresenter(container, this._handleViewAction, this._handleModeChange, this._api);
     cardPresenter.init(film);
     this._cardPresenter[film.id] = cardPresenter;
   }
@@ -164,6 +173,10 @@ export default class MoviesList {
     }
   }
 
+  _renderLoading() {
+    render(this._container, this._loadingComponent, RenderPosition.AFTERBEGIN);
+  }
+
   _clearBoard({resetRenderedMovieCount = false, resetSortType = false} = {}) {
     const moviesCount = this._getMovies().length;
 
@@ -171,9 +184,11 @@ export default class MoviesList {
       .values(this._cardPresenter)
       .forEach((presenter) => presenter.destroy());
     this._cardPresenter = {};
+    remove(this._listEmptyComponent);
     remove(this._sortComponent);
     remove(this._moviesWrapperComponent);
     remove(this._buttonComponent);
+    remove(this._loadingComponent);
 
     if (resetRenderedMovieCount) {
       this._renderedMovieCount = MOVIES_NUM_PER_STEP;
@@ -187,6 +202,11 @@ export default class MoviesList {
   }
 
   _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const movies = this._getMovies();
     const moviesCount = this._getMovies().length;
 

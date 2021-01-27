@@ -1,3 +1,33 @@
+export const actors = [
+  `Brad Pitt`,
+  `Edward Norton`,
+  `Helena Bonham Carter`,
+  `Meat Loaf Aday`,
+  `Jared Leto`
+];
+
+export const countries = [
+  `Russia`,
+  `USA`,
+  `Finland`,
+  `UK`
+];
+
+export const ageRating = {
+  MIN_AGE_RATING: 0,
+  MAX_AGE_RATING: 18
+};
+
+export const altTitles = [
+  `Lorem The Dance of Life`,
+  `Lorem Sagebrush Trail`,
+  `Lorem The Man with the Golden Arm`,
+  `Lorem Santa Claus Conquers the Martians`,
+  `Lorem Popeye the Sailor Meets Sindbad the Sailor`,
+  `Lorem Made for each other`,
+  `Lorem The great flamarion`
+];
+
 export const titles = [
   `The Dance of Life`,
   `Sagebrush Trail`,
@@ -6,6 +36,20 @@ export const titles = [
   `Popeye the Sailor Meets Sindbad the Sailor`,
   `Made for each other`,
   `The great flamarion`
+];
+
+export const directors = [
+  `Steven Spielberg`,
+  `Peter Jackson`,
+  `Michael Bay`,
+  `James Cameron`,
+  `Christopher Nolan`
+];
+
+export const writers = [
+  `Charlie Brooker`,
+  `Konnie Huq`,
+  `Rashida Jones`
 ];
 
 export const ratings = {
@@ -60,9 +104,9 @@ export const sentencesNum = {
   MAX_SENTENCES: 5
 };
 
-export const moviesNum = {
-  MOVIES_NUM_ALL: 20,
-  MOVIES_NUM_PER_STEP: 5
+export const crewNum = {
+  MIN_CREW: 1,
+  MAX_CREW: 3
 };
 
 export const commentsNum = {
@@ -76,6 +120,12 @@ export const emojis = [
   `./images/emoji/sleeping.png`,
   `./images/emoji/smile.png`
 ];
+
+export const moviesNum = {
+  MOVIES_NUM_ALL: 20,
+  MOVIES_NUM_PER_STEP: 5
+};
+
 
 export const MAX_LENGTH_SHORT_DESCRIPTION = 140;
 
@@ -94,7 +144,8 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  MAJOR: `MAJOR`,
+  INIT: `INIT`
 };
 
 export const FilterType = {

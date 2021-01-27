@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 const getWeight = (a, b) => {
   if (a > b) {
     return 1;
@@ -8,5 +10,5 @@ const getWeight = (a, b) => {
   return 0;
 };
 
-export const sortMovieDate = (filmA, filmB) => getWeight(filmA.year.slice(-4), filmB.year.slice(-4));
-export const sortMovieRating = (filmA, filmB) => getWeight(filmA.rating, filmB.rating);
+export const sortMovieDate = (filmA, filmB) => getWeight(dayjs(new Date(filmB.year)).format(`YYYY`), dayjs(new Date(filmA.year)).format(`YYYY`));
+export const sortMovieRating = (filmA, filmB) => getWeight(filmB.rating, filmA.rating);

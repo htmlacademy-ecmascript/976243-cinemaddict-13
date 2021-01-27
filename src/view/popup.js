@@ -1,12 +1,14 @@
 import Smartview from "./smart.js";
+import dayjs from "dayjs";
 
-const BLANK_COMMENT = {
-  text: ``,
-  emotion: ``
-};
-
-const createPopupTemplate = (movie, userComment) => {
+const createPopupTemplate = (movie, serverComments, localComment) => {
   const {poster,
+    actors,
+    country,
+    ageRating,
+    altTitle,
+    director,
+    writers,
     title,
     rating,
     year,
@@ -16,13 +18,13 @@ const createPopupTemplate = (movie, userComment) => {
     isInWatchList,
     isWatched,
     isFavorite,
-    commentsAmount,
-    comments} = movie;
+    commentsAmount
+  } = movie;
 
   const {
-    text,
-    emotion
-  } = userComment;
+    newText,
+    newEmotion
+  } = localComment;
 
   const isActive = (control) => {
     const activeClassName = control
@@ -34,16 +36,23 @@ const createPopupTemplate = (movie, userComment) => {
 
   const genreTitle = (genre.length === 1) ? `Genre` : `Genres`;
 
+  const EmotionsPics = {
+    smile: `./images/emoji/smile.png`,
+    sleeping: `./images/emoji/sleeping.png`,
+    puke: `./images/emoji/puke.png`,
+    angry: `./images/emoji/angry.png`
+  };
+
   const addCommentTemplate = (comment) => {
     return `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
-      <img src="${comment.emoji}" width="55" height="55" alt="emoji-smile">
+      <img src="${EmotionsPics[comment.emotion]}" width="55" height="55" alt="emoji-${comment.emotion}">
     </span>
     <div>
-      <p class="film-details__comment-text">${comment.message}</p>
+      <p class="film-details__comment-text">${comment.text}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${comment.author}</span>
-        <span class="film-details__comment-day">${comment.date}</span>
+        <span class="film-details__comment-day">${dayjs(new Date(comment.date)).format(`DD MMMM YYYY`)}</span>
         <button class="film-details__comment-delete" data-comment-id="${comment.id}">Delete</button>
       </p>
     </div>
@@ -53,14 +62,14 @@ const createPopupTemplate = (movie, userComment) => {
 
   const addComments = () => {
     const newComments = [];
-    for (let i = 0; i < comments.length; i++) {
-      newComments.push(addCommentTemplate(comments[i]));
+    for (let i = 0; i < serverComments.length; i++) {
+      newComments.push(addCommentTemplate(serverComments[i]));
     }
 
     return newComments.join(``);
   };
 
-  const userEmotion = (emotion) ? `<img src=${`./images/emoji/` + emotion + `.png`} width="55" height="55" alt="emoji-${emotion}">` : ``;
+  const userEmotion = (newEmotion) ? `<img src=${`./images/emoji/` + newEmotion + `.png`} width="55" height="55" alt="emoji-${newEmotion}">` : ``;
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -71,13 +80,13 @@ const createPopupTemplate = (movie, userComment) => {
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
           <img class="film-details__poster-img" src="${poster}" alt="">
-          <p class="film-details__age">18+</p>
+          <p class="film-details__age">${ageRating}+</p>
         </div>
         <div class="film-details__info">
           <div class="film-details__info-head">
             <div class="film-details__title-wrap">
               <h3 class="film-details__title">${title}</h3>
-              <p class="film-details__title-original">${title}</p>
+              <p class="film-details__title-original">${altTitle}</p>
             </div>
             <div class="film-details__rating">
               <p class="film-details__total-rating">${rating}</p>
@@ -86,19 +95,19 @@ const createPopupTemplate = (movie, userComment) => {
           <table class="film-details__table">
             <tr class="film-details__row">
               <td class="film-details__term">Director</td>
-              <td class="film-details__cell">Anthony Mann</td>
+              <td class="film-details__cell">${director}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">Anne Wigton, Heinz Herald, Richard Weil</td>
+              <td class="film-details__cell">${writers}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">Erich von Stroheim, Mary Beth Hughes, Dan Duryea</td>
+              <td class="film-details__cell">${actors}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${year}</td>
+              <td class="film-details__cell">${dayjs(new Date(year)).format(`DD MMMM YYYY`)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
@@ -106,7 +115,7 @@ const createPopupTemplate = (movie, userComment) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">USA</td>
+              <td class="film-details__cell">${country}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">${genreTitle}</td>
@@ -134,10 +143,10 @@ const createPopupTemplate = (movie, userComment) => {
         </ul>
         <div class="film-details__new-comment">
           <div class="film-details__add-emoji-label">
-            ${userEmotion}
+          ${userEmotion}
           </div>
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${text}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${newText}</textarea>
           </label>
           <div class="film-details__emoji-list">
             <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
@@ -165,10 +174,15 @@ const createPopupTemplate = (movie, userComment) => {
 };
 
 export default class Popup extends Smartview {
-  constructor(film) {
+  constructor(film, serverComments) {
     super();
     this._film = film;
-    this._userComment = BLANK_COMMENT;
+    this._serverComments = serverComments;
+
+    this._localComment = {
+      newText: ``,
+      newEmotion: ``
+    };
 
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
@@ -176,14 +190,13 @@ export default class Popup extends Smartview {
 
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
+
     this._deleteButtonClickHandler = this._deleteButtonClickHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
-
-    this.restoreHandlers();
   }
 
   getTemplate() {
-    return createPopupTemplate(this._film, this._userComment);
+    return createPopupTemplate(this._film, this._serverComments, this._localComment);
   }
 
   _closeClickHandler(evt) {
@@ -198,9 +211,9 @@ export default class Popup extends Smartview {
 
   _emojiClickHandler(evt) {
     evt.preventDefault();
-    this._userComment = Object.assign(
+    this._localComment = Object.assign(
         {},
-        this._userComment,
+        this._localComment,
         {
           emotion: evt.target.value,
         }
@@ -211,9 +224,9 @@ export default class Popup extends Smartview {
 
   _commentInputHandler(evt) {
     evt.preventDefault();
-    this._userComment = Object.assign(
+    this._localComment = Object.assign(
         {},
-        this._userComment,
+        this._localComment,
         {
           text: evt.target.value,
         }
@@ -221,11 +234,7 @@ export default class Popup extends Smartview {
   }
 
   getNewComment() {
-    return this._userComment;
-  }
-
-  removeNewComment() {
-    this._userComment = BLANK_COMMENT;
+    return this._localComment;
   }
 
   _deleteButtonClickHandler(evt) {
@@ -233,7 +242,7 @@ export default class Popup extends Smartview {
     this._callback.deleteButtonClick(evt.target.dataset.commentId);
   }
 
-  setHandlers() {
+  _setHandlers() {
     let emojies = this.getElement().querySelectorAll(`.film-details__emoji-item`);
     for (let emoji of emojies) {
       emoji.addEventListener(`click`, this._emojiClickHandler);
@@ -278,7 +287,7 @@ export default class Popup extends Smartview {
   }
 
   restoreHandlers() {
-    this.setHandlers();
+    this._setHandlers();
     this.setCloseClickHandler(this._callback.closeClick);
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
