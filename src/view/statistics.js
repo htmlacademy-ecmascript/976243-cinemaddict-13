@@ -1,6 +1,6 @@
 import SmartView from "./smart.js";
 import dayjs from "dayjs";
-import {StatsNav} from "../mock/const.js";
+import {StatsNav} from "../const.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 

@@ -1,7 +1,7 @@
 import MovieCard from "../view/movie-card.js";
 import Popup from "../view/popup.js";
 import {render, remove, replace} from "../utils/render.js";
-import {UserAction, UpdateType} from "../mock/const.js";
+import {UserAction, UpdateType} from "../const.js";
 import MoviesModel from "../model/movies.js";
 import CommentsModel from "../model/comments.js";
 
@@ -18,7 +18,6 @@ const Mode = {
 export default class Movie {
   constructor(movieListContainer, changeData, changeMode, api) {
     this._movieListContainer = movieListContainer;
-
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._api = api;
@@ -28,13 +27,8 @@ export default class Movie {
     this._mode = Mode.DEFAULT;
 
     this._bodyElement = document.querySelector(`body`);
-    this._mainElement = null;
-    this._closeButton = null;
-    this._commentsWrapper = null;
 
     this._moviesModel = new MoviesModel();
-    this._commentsModel = new CommentsModel();
-    this._commentsModel.addObserver(this._handleModelEvent);
 
     this._openPopup = this._openPopup.bind(this);
     this._closePopup = this._closePopup.bind(this);
@@ -43,9 +37,14 @@ export default class Movie {
     this._handleWatchListClick = this._handleWatchListClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
-    this._handleFormSubmit = this._handleFormSubmit.bind(this);
-    this._handleModelEvent = this._handleModelEvent.bind(this);
+
     this._handleDeleteButtonClick = this._handleDeleteButtonClick.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
+    this._commentsModel = new CommentsModel();
+    this._commentsModel.addObserver(this._handleModelEvent);
+
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   init(film) {
@@ -53,7 +52,7 @@ export default class Movie {
 
     const prevCardComponent = this._cardComponent;
 
-    this._cardComponent = new MovieCard(film);
+    this._cardComponent = new MovieCard(this._film);
 
     this._cardComponent.setPosterClickHandler(this._openPopup);
     this._cardComponent.setTitleClickHandler(this._openPopup);
@@ -91,6 +90,14 @@ export default class Movie {
     }
   }
 
+  setAborting() {
+    const resetPopupState = () => {
+      this._popupComponent.updateData({isDisabled: false, deletingCommentId: null});
+    };
+
+    this._popupComponent.shake(resetPopupState);
+  }
+
   _openPopup() {
     if (this._mode !== Mode.POPUP) {
       this._changeMode();
@@ -124,7 +131,7 @@ export default class Movie {
         document.addEventListener(`keydown`, this._onPopupEscPress);
       } else {
         render(this._bodyElement, this._popupComponent);
-        this._bodyElement.classList.add();
+        this._bodyElement.classList.add(`hide-overflow`);
         document.addEventListener(`keydown`, this._handleFormSubmit);
         document.addEventListener(`keydown`, this._onPopupEscPress);
       }
@@ -148,28 +155,6 @@ export default class Movie {
     }
   }
 
-  _handleFormSubmit(evt) {
-    if (evt.ctrlKey && evt.key === EvtKeys.ENTER) {
-      const localComment = this._popupComponent.getNewComment();
-
-      if (localComment.newEmotion === `` || localComment.text === ``) {
-        return;
-      }
-
-      localComment.date = new Date();
-      localComment.author = `Author`;
-      localComment.emotion = localComment.newEmotion;
-      localComment.id = Date.now() + parseInt(Math.random() * 10000, 10);
-
-      localComment[this._film.id].push(localComment);
-
-      this._commentsModel.addComment(
-          UserAction.ADD_COMMENT,
-          localComment
-      );
-    }
-  }
-
   _handleDeleteButtonClick(commentId) {
     this._popupComponent.updateData({
       isDeleting: true,
@@ -181,7 +166,33 @@ export default class Movie {
           () => {
             this._commentsModel.deleteComment(UserAction.DELETE_COMMENT, commentId);
           }
-      );
+      )
+      .catch(() => {
+        this.setAborting();
+      });
+  }
+
+  _handleFormSubmit(evt) {
+    if (evt.ctrlKey && evt.key === EvtKeys.ENTER) {
+      const localComment = this._popupComponent.getNewComment();
+      if (localComment.emotion === `` || localComment.text === ``) {
+        this.setAborting();
+        return;
+      }
+
+      localComment.date = new Date();
+
+      this._api.addComment(this._film.id, localComment)
+        .then(
+            (data) => {
+              const newComment = data.comments[data.comments.length - 1];
+              return this._commentsModel.addComment(UserAction.ADD_COMMENT, newComment);
+            }
+        )
+        .catch(() => {
+          this.setAborting();
+        });
+    }
   }
 
   _handleModelEvent(userAction) {

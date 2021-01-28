@@ -1,5 +1,5 @@
 import AbstractView from "./abstract.js";
-import {FilterType} from "../mock/const.js";
+import {FilterType} from "../const.js";
 
 const createNavTemplate = () => {
   return `<nav class="main-navigation">

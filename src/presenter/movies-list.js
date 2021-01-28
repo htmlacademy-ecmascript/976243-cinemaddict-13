@@ -1,7 +1,7 @@
 import {render, remove, RenderPosition} from "../utils/render.js";
 import {sortMovieDate, sortMovieRating} from "../utils/sorting.js";
 import {filter} from "../utils/filter.js";
-import {moviesNum, SortType, UpdateType, UserAction} from "../mock/const.js";
+import {MOVIES_NUM_PER_STEP, SortType, UpdateType, UserAction} from "../const.js";
 
 import Sorting from "../view/menu-sorting.js";
 import Filter from "../view/menu-filters.js";
@@ -10,9 +10,9 @@ import ListEmpty from "../view/list-empty.js";
 import Button from "../view/show-more-button.js";
 import LoadingView from "../view/loading.js";
 
-import MovieCardPresenter from "./movie.js";
+import CommentsModel from "../model/comments.js";
 
-const {MOVIES_NUM_PER_STEP} = moviesNum;
+import MovieCardPresenter from "./movie.js";
 
 export default class MoviesList {
   constructor(container, moviesModel, filterModel, api) {
@@ -30,6 +30,7 @@ export default class MoviesList {
     this._filters = new Filter();
     this._moviesWrapperComponent = new MoviesWrapper();
     this._loadingComponent = new LoadingView();
+    this._commentModel = new CommentsModel();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
