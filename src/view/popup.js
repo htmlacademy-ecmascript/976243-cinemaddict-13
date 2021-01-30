@@ -245,8 +245,8 @@ export default class Popup extends Smartview {
   }
 
   _setHandlers() {
-    let emojies = this.getElement().querySelectorAll(`.film-details__emoji-item`);
-    for (let emoji of emojies) {
+    const emojies = this.getElement().querySelectorAll(`.film-details__emoji-item`);
+    for (const emoji of emojies) {
       emoji.addEventListener(`click`, this._emojiClickHandler);
     }
     this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`input`, this._commentInputHandler);
@@ -254,7 +254,7 @@ export default class Popup extends Smartview {
 
   setDeleteButtonClickHandler(callback) {
     this._callback.deleteButtonClick = callback;
-    let commentsDeleteButtons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
+    const commentsDeleteButtons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
     commentsDeleteButtons.forEach((comment) => comment.addEventListener(`click`, this._deleteButtonClickHandler));
   }
 
