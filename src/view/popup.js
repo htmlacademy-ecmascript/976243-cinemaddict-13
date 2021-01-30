@@ -1,12 +1,7 @@
 import Smartview from "./smart.js";
 import dayjs from "dayjs";
+import {EmotionsPics, SHAKE_ANIMATION_TIMEOUT} from "../const.js";
 
-const EmotionsPics = {
-  smile: `./images/emoji/smile.png`,
-  sleeping: `./images/emoji/sleeping.png`,
-  puke: `./images/emoji/puke.png`,
-  angry: `./images/emoji/angry.png`
-};
 
 const createCommentTemplate = (comment, isDeleting) => {
   return `<li class="film-details__comment">
@@ -17,7 +12,7 @@ const createCommentTemplate = (comment, isDeleting) => {
     <p class="film-details__comment-text">${comment.text}</p>
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${comment.author}</span>
-      <span class="film-details__comment-day">${dayjs(new Date(comment.date)).format(`DD MMMM YYYY`)}</span>
+      <span class="film-details__comment-day">${dayjs(new Date(comment.date)).format(`DD MMMM YYYY HH:mm`)}</span>
       <button class="film-details__comment-delete" data-comment-id="${comment.id}" ${isDeleting ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>
       </p>
   </div>
@@ -261,6 +256,15 @@ export default class Popup extends Smartview {
     this._callback.deleteButtonClick = callback;
     let commentsDeleteButtons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
     commentsDeleteButtons.forEach((comment) => comment.addEventListener(`click`, this._deleteButtonClickHandler));
+  }
+
+  shake(callback) {
+    this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this.getElement().style.animation = ``;
+      callback();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _watchlistClickHandler(evt) {

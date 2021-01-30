@@ -1,5 +1,13 @@
 export const MOVIES_NUM_PER_STEP = 5;
 export const MAX_LENGTH_SHORT_DESCRIPTION = 140;
+export const SHAKE_ANIMATION_TIMEOUT = 600;
+
+export const EmotionsPics = {
+  smile: `./images/emoji/smile.png`,
+  sleeping: `./images/emoji/sleeping.png`,
+  puke: `./images/emoji/puke.png`,
+  angry: `./images/emoji/angry.png`
+};
 
 export const SortType = {
   DEFAULT: `default`,

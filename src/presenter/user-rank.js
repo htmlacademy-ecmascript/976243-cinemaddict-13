@@ -36,7 +36,7 @@ export default class UserProfile {
       return ``;
     } else if (watchedMoviesAmount >= 21) {
       return UserRank.MOVIE_BUFF;
-    } else if (watchedMoviesAmount >= 10) {
+    } else if (watchedMoviesAmount >= 11) {
       return UserRank.FAN;
     } else {
       return UserRank.NOVICE;
@@ -45,5 +45,9 @@ export default class UserProfile {
 
   _handleModelEvent() {
     this.init();
+  }
+
+  getCurrentUserRank() {
+    return this._userRank;
   }
 }

@@ -127,8 +127,7 @@ const renderChart = (statisticCtx, films) => {
 };
 
 const createStatsTemplate = (data) => {
-
-  const {films, currentPeriod} = data;
+  const {films, currentPeriod, currentUserRank} = data;
   const {hours, minutes} = getTotalDuration(films);
   const topGenre = getTopGenre(films);
 
@@ -136,7 +135,7 @@ const createStatsTemplate = (data) => {
   <p class="statistic__rank">
     Your rank
     <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-    <span class="statistic__rank-label">Sci-Fighter</span>
+    <span class="statistic__rank-label">${currentUserRank}</span>
   </p>
 
   <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -180,11 +179,12 @@ const createStatsTemplate = (data) => {
 };
 
 export default class Stats extends SmartView {
-  constructor(films, currentPeriod) {
+  constructor(films, currentPeriod, currentUserRank) {
     super();
     this._films = films;
     this._currentPeriod = currentPeriod;
-    this._data = {films: this._films, currentPeriod: this._currentPeriod};
+    this._currentUserRank = currentUserRank;
+    this._data = {films: this._films, currentPeriod: this._currentPeriod, currentUserRank: this._currentUserRank};
 
     this._chart = null;
     this._setChart();

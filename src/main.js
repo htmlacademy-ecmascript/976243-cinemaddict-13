@@ -2,6 +2,7 @@ import {render, replace} from "./utils/render.js";
 import {UpdateType, FilterType, StatsNav} from "./const.js";
 import NavView from "./view/nav.js";
 import StatsView from "./view/statistics.js";
+import FooterStatiscticssView from "./view/footer-statistics.js";
 import MovieListPresenter from "./presenter/movies-list.js";
 import FilterPresenter from "./presenter/filter.js";
 import UserRankPresenter from "./presenter/user-rank.js";
@@ -17,6 +18,7 @@ const moviesModel = new MoviesModel();
 const filterModel = new FilterModel();
 const navComponent = new NavView();
 
+const siteFooterElement = document.querySelector(`.footer__statistics`);
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 
@@ -28,10 +30,6 @@ const userRankPresenter = new UserRankPresenter(siteHeaderElement, moviesModel);
 const filterPresenter = new FilterPresenter(siteNavElement, filterModel, moviesModel);
 const movieListPresenter = new MovieListPresenter(siteMainElement, moviesModel, filterModel, api);
 
-userRankPresenter.init();
-filterPresenter.init();
-movieListPresenter.init();
-
 let statsComponent = null;
 
 const handleNavClick = (navType) => {
@@ -42,8 +40,9 @@ const handleNavClick = (navType) => {
   }
 
   const prevStatsComponent = statsComponent;
-
-  statsComponent = new StatsView(moviesModel.getMovies(), StatsNav.ALL_TIME);
+  const currentUserTitle = userRankPresenter.getCurrentUserRank();
+  const watchedFilms = moviesModel.getMovies().filter((movie) => movie.isWatched);
+  statsComponent = new StatsView(watchedFilms, StatsNav.ALL_TIME, currentUserTitle);
 
   if (prevStatsComponent === null) {
     movieListPresenter.destroy();
@@ -59,10 +58,16 @@ const handleNavClick = (navType) => {
 
 navComponent.setMenuClickHandler(handleNavClick);
 
+userRankPresenter.init();
+filterPresenter.init();
+movieListPresenter.init();
+
 api.getMovies()
   .then((movies) => {
     moviesModel.setMovies(UpdateType.INIT, movies);
+    render(siteFooterElement, new FooterStatiscticssView(moviesModel.getMovies()));
   })
   .catch(() => {
     moviesModel.setMovies(UpdateType.INIT, []);
+    render(siteFooterElement, new FooterStatiscticssView(moviesModel.getMovies()));
   });
