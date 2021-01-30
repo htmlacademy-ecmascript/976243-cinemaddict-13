@@ -1,5 +1,5 @@
 import AbstractView from "./abstract.js";
-import {MAX_LENGTH_SHORT_DESCRIPTION} from "../mock/const.js";
+import {MAX_LENGTH_SHORT_DESCRIPTION} from "../const.js";
 import dayjs from "dayjs";
 
 const createMovieCardTemplate = (movie) => {
@@ -13,7 +13,7 @@ const createMovieCardTemplate = (movie) => {
     isInWatchList,
     isWatched,
     isFavorite,
-    commentsAmount} = movie;
+    comments} = movie;
 
   const isActive = (control) => {
     const activeClassName = control
@@ -32,6 +32,8 @@ const createMovieCardTemplate = (movie) => {
   };
 
   const checkComments = () => {
+    const commentsAmount = comments.length;
+
     const commentsNum = (commentsAmount === 1)
       ? commentsAmount + ` comment`
       : commentsAmount + ` comments`;

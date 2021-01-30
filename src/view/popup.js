@@ -1,5 +1,38 @@
 import Smartview from "./smart.js";
 import dayjs from "dayjs";
+import {EmotionsPics, SHAKE_ANIMATION_TIMEOUT} from "../const.js";
+
+
+const createCommentTemplate = (comment, isDeleting) => {
+  return `<li class="film-details__comment">
+  <span class="film-details__comment-emoji">
+    <img src="${EmotionsPics[comment.emotion]}" width="55" height="55" alt="emoji-${comment.emotion}">
+  </span>
+  <div>
+    <p class="film-details__comment-text">${comment.text}</p>
+    <p class="film-details__comment-info">
+      <span class="film-details__comment-author">${comment.author}</span>
+      <span class="film-details__comment-day">${dayjs(new Date(comment.date)).format(`DD MMMM YYYY HH:mm`)}</span>
+      <button class="film-details__comment-delete" data-comment-id="${comment.id}" ${isDeleting ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>
+      </p>
+  </div>
+</li>`;
+};
+
+
+const createCommentsTemplate = (comments, deletingCommentId) => {
+  const commentListTemplate = comments
+    .slice()
+    .map((comment) => {
+      if (deletingCommentId === comment.id) {
+        return createCommentTemplate(comment, true);
+      } else {
+        return createCommentTemplate(comment, false);
+      }
+    })
+    .join(`\n`);
+  return commentListTemplate;
+};
 
 const createPopupTemplate = (movie, serverComments, localComment) => {
   const {poster,
@@ -18,12 +51,13 @@ const createPopupTemplate = (movie, serverComments, localComment) => {
     isInWatchList,
     isWatched,
     isFavorite,
-    commentsAmount
+    comments,
+    deletingCommentId
   } = movie;
 
   const {
-    newText,
-    newEmotion
+    text,
+    emotion
   } = localComment;
 
   const isActive = (control) => {
@@ -36,40 +70,7 @@ const createPopupTemplate = (movie, serverComments, localComment) => {
 
   const genreTitle = (genre.length === 1) ? `Genre` : `Genres`;
 
-  const EmotionsPics = {
-    smile: `./images/emoji/smile.png`,
-    sleeping: `./images/emoji/sleeping.png`,
-    puke: `./images/emoji/puke.png`,
-    angry: `./images/emoji/angry.png`
-  };
-
-  const addCommentTemplate = (comment) => {
-    return `<li class="film-details__comment">
-    <span class="film-details__comment-emoji">
-      <img src="${EmotionsPics[comment.emotion]}" width="55" height="55" alt="emoji-${comment.emotion}">
-    </span>
-    <div>
-      <p class="film-details__comment-text">${comment.text}</p>
-      <p class="film-details__comment-info">
-        <span class="film-details__comment-author">${comment.author}</span>
-        <span class="film-details__comment-day">${dayjs(new Date(comment.date)).format(`DD MMMM YYYY`)}</span>
-        <button class="film-details__comment-delete" data-comment-id="${comment.id}">Delete</button>
-      </p>
-    </div>
-  </li>`;
-  };
-
-
-  const addComments = () => {
-    const newComments = [];
-    for (let i = 0; i < serverComments.length; i++) {
-      newComments.push(addCommentTemplate(serverComments[i]));
-    }
-
-    return newComments.join(``);
-  };
-
-  const userEmotion = (newEmotion) ? `<img src=${`./images/emoji/` + newEmotion + `.png`} width="55" height="55" alt="emoji-${newEmotion}">` : ``;
+  const userEmotion = (emotion) ? `<img src=${`./images/emoji/` + emotion + `.png`} width="55" height="55" alt="emoji-${emotion}">` : ``;
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -137,16 +138,16 @@ const createPopupTemplate = (movie, serverComments, localComment) => {
     </div>
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsAmount}</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
         <ul class="film-details__comments-list">
-          ${addComments()}
+          ${createCommentsTemplate(serverComments, deletingCommentId)}
         </ul>
         <div class="film-details__new-comment">
           <div class="film-details__add-emoji-label">
           ${userEmotion}
           </div>
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${newText}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${text}</textarea>
           </label>
           <div class="film-details__emoji-list">
             <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
@@ -179,9 +180,10 @@ export default class Popup extends Smartview {
     this._film = film;
     this._serverComments = serverComments;
 
+
     this._localComment = {
-      newText: ``,
-      newEmotion: ``
+      text: ``,
+      emotion: ``
     };
 
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
@@ -254,6 +256,15 @@ export default class Popup extends Smartview {
     this._callback.deleteButtonClick = callback;
     let commentsDeleteButtons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
     commentsDeleteButtons.forEach((comment) => comment.addEventListener(`click`, this._deleteButtonClickHandler));
+  }
+
+  shake(callback) {
+    this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this.getElement().style.animation = ``;
+      callback();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _watchlistClickHandler(evt) {
