@@ -4,7 +4,7 @@ const createFooterStatisticsTemplate = (movies) => {
   return `<p>${movies.length} movies inside</p>`;
 };
 
-export default class FooterStats extends AbstractView {
+export default class FooterStatistics extends AbstractView {
   constructor(movies) {
     super();
     this._movies = movies;

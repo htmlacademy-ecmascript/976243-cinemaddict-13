@@ -8,7 +8,7 @@ const createUserRankTemplate = (userRank) => {
   </section>`;
 };
 
-export default class Rank extends AbstractView {
+export default class UserRank extends AbstractView {
   constructor(userRank) {
     super();
     this._userRank = userRank;

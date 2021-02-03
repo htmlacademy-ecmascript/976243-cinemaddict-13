@@ -38,8 +38,8 @@ const getTopGenre = (films) => {
 const getTotalDuration = (movies) => {
   let sum = 0;
 
-  for (let i = 0; i < movies.length; i++) {
-    sum = sum + movies[i].duration;
+  for (const movie of movies) {
+    sum = sum + movie.duration;
   }
 
   const hours = Math.floor(sum / 60);
@@ -178,7 +178,7 @@ const createStatsTemplate = (data) => {
 </section>`;
 };
 
-export default class Stats extends SmartView {
+export default class Statistics extends SmartView {
   constructor(films, currentPeriod, currentUserRank) {
     super();
     this._films = films;

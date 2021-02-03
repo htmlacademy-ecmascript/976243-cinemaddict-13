@@ -3,10 +3,10 @@ export const MAX_LENGTH_SHORT_DESCRIPTION = 140;
 export const SHAKE_ANIMATION_TIMEOUT = 600;
 
 export const EmotionsPics = {
-  smile: `./images/emoji/smile.png`,
-  sleeping: `./images/emoji/sleeping.png`,
-  puke: `./images/emoji/puke.png`,
-  angry: `./images/emoji/angry.png`
+  SMILE: `./images/emoji/smile.png`,
+  SLEEPING: `./images/emoji/sleeping.png`,
+  PUKE: `./images/emoji/puke.png`,
+  ANGRY: `./images/emoji/angry.png`
 };
 
 export const SortType = {
@@ -44,8 +44,14 @@ export const StatsNav = {
   YEAR: `year`
 };
 
-export const UserRank = {
+export const UserRankTitle = {
   NOVICE: `Novice`,
   FAN: `Fan`,
   MOVIE_BUFF: `Movie Buff`
+};
+
+export const UserRankBoundaries = {
+  NONE: 0,
+  MIN_FAN: 11,
+  MIN_MOVIE_BUFF: 21
 };

@@ -6,7 +6,7 @@ import {EmotionsPics, SHAKE_ANIMATION_TIMEOUT} from "../const.js";
 const createCommentTemplate = (comment, isDeleting) => {
   return `<li class="film-details__comment">
   <span class="film-details__comment-emoji">
-    <img src="${EmotionsPics[comment.emotion]}" width="55" height="55" alt="emoji-${comment.emotion}">
+    <img src="${EmotionsPics[comment.emotion.toUpperCase()]}" width="55" height="55" alt="emoji-${comment.emotion}">
   </span>
   <div>
     <p class="film-details__comment-text">${comment.text}</p>
@@ -26,12 +26,20 @@ const createCommentsTemplate = (comments, deletingCommentId) => {
     .map((comment) => {
       if (deletingCommentId === comment.id) {
         return createCommentTemplate(comment, true);
-      } else {
-        return createCommentTemplate(comment, false);
       }
+
+      return createCommentTemplate(comment, false);
     })
     .join(`\n`);
   return commentListTemplate;
+};
+
+const isActive = (control) => {
+  const activeClassName = control
+    ? `checked`
+    : ``;
+
+  return activeClassName;
 };
 
 const createPopupTemplate = (movie, serverComments, localComment) => {
@@ -60,17 +68,8 @@ const createPopupTemplate = (movie, serverComments, localComment) => {
     emotion
   } = localComment;
 
-  const isActive = (control) => {
-    const activeClassName = control
-      ? `checked`
-      : ``;
-
-    return activeClassName;
-  };
-
   const genreTitle = (genre.length === 1) ? `Genre` : `Genres`;
-
-  const userEmotion = (emotion) ? `<img src=${`./images/emoji/` + emotion + `.png`} width="55" height="55" alt="emoji-${emotion}">` : ``;
+  const userEmotion = (emotion) ? `<img src=./images/emoji/${emotion}.png width="55" height="55" alt="emoji-${emotion}">` : ``;
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
