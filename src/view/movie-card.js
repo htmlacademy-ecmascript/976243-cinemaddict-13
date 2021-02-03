@@ -2,6 +2,14 @@ import AbstractView from "./abstract.js";
 import {MAX_LENGTH_SHORT_DESCRIPTION} from "../const.js";
 import dayjs from "dayjs";
 
+const isActive = (control) => {
+  const activeClassName = control
+    ? `film-card__controls-item--active`
+    : ``;
+
+  return activeClassName;
+};
+
 const createMovieCardTemplate = (movie) => {
   const {poster,
     title,
@@ -15,31 +23,13 @@ const createMovieCardTemplate = (movie) => {
     isFavorite,
     comments} = movie;
 
-  const isActive = (control) => {
-    const activeClassName = control
-      ? `film-card__controls-item--active`
-      : ``;
+  const descriptionText = (description.length >= MAX_LENGTH_SHORT_DESCRIPTION)
+    ? `${description.slice(0, MAX_LENGTH_SHORT_DESCRIPTION - 1)}...`
+    : description;
 
-    return activeClassName;
-  };
-
-  const shortDescriprion = () => {
-    const descriptionText = (description.length >= MAX_LENGTH_SHORT_DESCRIPTION)
-      ? description.slice(0, MAX_LENGTH_SHORT_DESCRIPTION - 1) + `...`
-      : description;
-
-    return descriptionText;
-  };
-
-  const checkComments = () => {
-    const commentsAmount = comments.length;
-
-    const commentsNum = (commentsAmount === 1)
-      ? commentsAmount + ` comment`
-      : commentsAmount + ` comments`;
-
-    return commentsNum;
-  };
+  const commentsNum = (comments.length === 1)
+    ? `${comments.length} comment`
+    : `${comments.length} comments`;
 
   return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
@@ -50,8 +40,8 @@ const createMovieCardTemplate = (movie) => {
       <span class="film-card__genre">${genre[0]}</span>
     </p>
     <img src="${poster}" alt="" class="film-card__poster">
-    <p class="film-card__description">${shortDescriprion()}</p>
-    <a class="film-card__comments">${checkComments()}</a>
+    <p class="film-card__description">${descriptionText}</p>
+    <a class="film-card__comments">${commentsNum}</a>
     <div class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isActive(isInWatchList)}" type="button">Add to watchlist</button>
       <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isActive(isWatched)}" type="button">Mark as watched</button>
@@ -60,7 +50,7 @@ const createMovieCardTemplate = (movie) => {
   </article>`;
 };
 
-export default class Movie extends AbstractView {
+export default class MovieCard extends AbstractView {
   constructor(film) {
     super();
     this._film = film;

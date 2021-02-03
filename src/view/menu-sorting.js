@@ -9,7 +9,7 @@ const createSortingTemplate = (currentSortType) => {
   </ul>`;
 };
 
-export default class Sorting extends AbstractView {
+export default class MenuSorting extends AbstractView {
   constructor(currentSortType) {
     super();
 

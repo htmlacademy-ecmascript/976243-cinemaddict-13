@@ -4,13 +4,10 @@ import {filter} from "../utils/filter.js";
 import {MOVIES_NUM_PER_STEP, SortType, UpdateType, UserAction} from "../const.js";
 
 import Sorting from "../view/menu-sorting.js";
-import Filter from "../view/menu-filters.js";
 import MoviesWrapper from "../view/movies-wrapper.js";
 import ListEmpty from "../view/list-empty.js";
 import Button from "../view/show-more-button.js";
 import LoadingView from "../view/loading.js";
-
-import CommentsModel from "../model/comments.js";
 
 import MovieCardPresenter from "./movie.js";
 
@@ -27,10 +24,8 @@ export default class MoviesList {
     this._api = api;
 
     this._listEmptyComponent = new ListEmpty();
-    this._filters = new Filter();
     this._moviesWrapperComponent = new MoviesWrapper();
     this._loadingComponent = new LoadingView();
-    this._commentModel = new CommentsModel();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -40,7 +35,6 @@ export default class MoviesList {
 
 
     this._movies = null;
-    this._generateFilters = null;
     this._mainMoviesContainer = null;
     this._mainFilmsContainer = null;
     this._sortComponent = null;
@@ -191,11 +185,9 @@ export default class MoviesList {
     remove(this._buttonComponent);
     remove(this._loadingComponent);
 
-    if (resetRenderedMovieCount) {
-      this._renderedMovieCount = MOVIES_NUM_PER_STEP;
-    } else {
-      this._renderedMovieCount = Math.min(moviesCount, this._renderedMovieCount);
-    }
+    this._renderedMovieCount = (resetRenderedMovieCount)
+      ? MOVIES_NUM_PER_STEP
+      : Math.min(moviesCount, this._renderedMovieCount);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;

@@ -2,7 +2,6 @@ import MovieCard from "../view/movie-card.js";
 import Popup from "../view/popup.js";
 import {render, remove, replace} from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
-import MoviesModel from "../model/movies.js";
 import CommentsModel from "../model/comments.js";
 
 const EvtKeys = {
@@ -27,8 +26,6 @@ export default class Movie {
     this._mode = Mode.DEFAULT;
 
     this._bodyElement = document.querySelector(`body`);
-
-    this._moviesModel = new MoviesModel();
 
     this._openPopup = this._openPopup.bind(this);
     this._closePopup = this._closePopup.bind(this);
@@ -106,7 +103,6 @@ export default class Movie {
     this._mode = Mode.POPUP;
 
     this._bodyElement.classList.add(`hide-overflow`);
-    this._siteMainElement = this._bodyElement.querySelector(`main`);
 
     const prevPopupComponent = this._popupComponent;
 
@@ -126,15 +122,13 @@ export default class Movie {
         const currentScrollYPosition = prevPopupComponent.getElement().scrollTop;
         replace(this._popupComponent, prevPopupComponent);
         this._popupComponent.getElement().scrollTo(0, currentScrollYPosition);
-        this._bodyElement.classList.add(`hide-overflow`);
-        document.addEventListener(`keydown`, this._handleFormSubmit);
-        document.addEventListener(`keydown`, this._onPopupEscPress);
       } else {
         render(this._bodyElement, this._popupComponent);
-        this._bodyElement.classList.add(`hide-overflow`);
-        document.addEventListener(`keydown`, this._handleFormSubmit);
-        document.addEventListener(`keydown`, this._onPopupEscPress);
       }
+
+      this._bodyElement.classList.add(`hide-overflow`);
+      document.addEventListener(`keydown`, this._handleFormSubmit);
+      document.addEventListener(`keydown`, this._onPopupEscPress);
     });
   }
 

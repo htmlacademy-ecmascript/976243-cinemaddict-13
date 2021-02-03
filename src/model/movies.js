@@ -4,7 +4,6 @@ export default class Movies extends Observer {
   constructor() {
     super();
     this._movies = [];
-    this._comments = [];
   }
 
   setMovies(updateType, movies) {

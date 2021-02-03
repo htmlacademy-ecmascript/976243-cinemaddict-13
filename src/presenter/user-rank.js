@@ -1,8 +1,8 @@
 import UserRankView from "../view/user-rank.js";
 import {render, remove, replace} from "../utils/render.js";
-import {UserRank} from "../const.js";
+import {UserRankTitle, UserRankBoundaries} from "../const.js";
 
-export default class UserProfile {
+export default class UserRank {
   constructor(userRankContainer, moviesModel) {
     this._userRankContainer = userRankContainer;
     this._moviesModel = moviesModel;
@@ -32,15 +32,15 @@ export default class UserProfile {
   _getUserRank() {
     const watchedMoviesAmount = this._moviesModel.getMovies().filter((film) => film.isWatched).length;
 
-    if (watchedMoviesAmount === 0) {
+    if (watchedMoviesAmount === UserRankBoundaries.NONE) {
       return ``;
-    } else if (watchedMoviesAmount >= 21) {
-      return UserRank.MOVIE_BUFF;
-    } else if (watchedMoviesAmount >= 11) {
-      return UserRank.FAN;
-    } else {
-      return UserRank.NOVICE;
+    } else if (watchedMoviesAmount >= UserRankBoundaries.MIN_MOVIE_BUFF) {
+      return UserRankTitle.MOVIE_BUFF;
+    } else if (watchedMoviesAmount >= UserRankBoundaries.MIN_FAN) {
+      return UserRankTitle.FAN;
     }
+
+    return UserRankTitle.NOVICE;
   }
 
   _handleModelEvent() {
